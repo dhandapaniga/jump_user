@@ -1,0 +1,112 @@
+---
+# defaults file for jump_user
+ssh_chroot_jail_path: /home/jail
+ssh_chroot_jail_group_name: jailed
+ssh_chroot_jail_users: []
+ssh_chroot_jail_dirs:
+  - bin
+  - dev
+  - etc
+  - lib
+  - lib64
+  - usr/bin
+  - usr/lib
+  - usr/lib64
+  - home
+
+# can include type: c, b, p
+# c = char device (unbuffered) [the default]
+# b = block device (buffered)
+# p = FIFO device
+# anything else may result in errors with mknod or systemd-tmpfiles
+ssh_chroot_jail_devs:
+  - {dev: 'null', major: '1', minor: '3'}
+  - {dev: 'random', major: '5', minor: '0'}
+  - {dev: 'urandom', major: '1', minor: '5'}
+  - {dev: 'zero', major: '1', minor: '8'}
+
+ssh_chroot_tmpfiles_conf_path: /etc/tmpfiles.d/ssh-chroot.conf
+
+ssh_chroot_bins:
+  - /bin/cp
+  - /bin/sh
+  - /bin/bash
+  - /bin/ls
+  - /bin/rm
+  - /bin/cat
+  - /bin/grep
+  - /bin/sed
+  - /bin/chmod
+  - /bin/chown
+  - /bin/ed
+  - /bin/ssh
+  - /bin/nano
+  - /usr/bin/tail
+  - /usr/bin/head
+  - /usr/bin/awk
+  - /usr/bin/wc
+  - /usr/bin/sort
+  - /usr/bin/uniq
+  - /usr/bin/cut
+  - /usr/bin/scp
+  - /usr/bin/tee
+  - /usr/bin/touch
+  - /usr/bin/vim
+  - /usr/bin/vi
+  - /usr/bin/dircolors
+  - /usr/bin/tput
+  - /usr/bin/free
+  - /usr/bin/top
+  - /usr/bin/find
+  - bin: /usr/bin/which
+    l2chroot: false
+  - /usr/bin/id
+  - /usr/bin/whoami
+  - /usr/bin/groups
+  # Can also set mode, e.g. to setuid or set different permissions.
+  # - bin: /bin/ping
+  #   mode: 4755
+
+ssh_chroot_l2chroot_template: l2chroot.j2
+ssh_chroot_l2chroot_path: /usr/local/bin/l2chroot
+
+ssh_chroot_copy_extra_items:
+  - /etc/hosts
+  - /etc/passwd
+  - /etc/group
+  - /etc/ld.so.cache
+  - /etc/ld.so.conf
+  - /etc/nsswitch.conf
+
+ssh_chroot_sshd_chroot_jail_config: |
+  Match group {{ ssh_chroot_jail_group_name }}
+      ChrootDirectory {{ ssh_chroot_jail_path }}
+      X11Forwarding no
+      AllowTcpForwarding no
+  # Supported HostKey algorithms by order of preference.
+  HostKey /etc/ssh/ssh_host_ed25519_key
+  HostKey /etc/ssh/ssh_host_rsa_key
+  HostKey /etc/ssh/ssh_host_ecdsa_key
+
+  #KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+  #Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+  #MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
+
+  # Password based logins are disabled - only public key based logins are allowed.
+  AuthenticationMethods publickey
+
+  # LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
+  LogLevel VERBOSE
+
+  # Log sftp level file access (read/write/etc.) that would not be easily logged otherwise.
+  Subsystem sftp  /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO
+
+  # Root login is not allowed for auditing reasons. This is because it's difficult to track which process belongs to which root user:
+  #
+  # On Linux, user sessions are tracking using a kernel-side session id, however, this session id is not recorded by OpenSSH.
+  # Additionally, only tools such as systemd and auditd record the process session id.
+  # On other OSes, the user session id is not necessarily recorded at all kernel-side.
+  # Using regular users in combination with /bin/su or /usr/bin/sudo ensure a clear audit track.
+  PermitRootLogin No
+ssh_chroot_jail_dirs_recurse: true
+lib64_path: /lib/x86_64-linux-gnu

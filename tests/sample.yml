@@ -1,0 +1,25 @@
+---
+- hosts: jump
+  remote_user: team-cloud
+  become: true
+  gather_facts : false
+  vars:
+    ssh_chroot_jail_users:
+    - name: admin.ganesan.dhandapani
+      home: /home/someuser
+      shell: /usr/bin/bash
+      ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCpXyla3EFMA3eBc0vYWlViHoihVXXB8mf1AWskgOTDlQ/MquG8VstpsVVskaL2yFXzfTetaJc/Dpf/yFRdHBKna/o47m/ZYbEl9DeXRfjm6YimgREqhLYrkxbT2J7rs7jNjGEOLmDZh7LE9NxGlgtUrkcOIof6kuMzXDG0nrUCDfV0Mq9yilW8M2sF5YDQobfDhyTxj/7Ji5UFKSnX0+4KZqXVkl69T0pwDoGMIt+d17xSZ3EhJa1fnGaq609kDNbvrwihnNSIq0Jy2/TbD2ZztdPQH+oISH9npQ88hwumXuwHp8pgzKmL6D9a5ci+rKbR1tl9hxUeX2iivuwYt4H3+rW5PyWnDhDrHVqdsOuTdC+HEbc2y76otCGpoC/+t4A9s8t6Ne0VDE8uvSW+eYH0oSmQyA8TPesnMHutm5rTZo85hxep5ZHOSpqGc7huHsTr34oSfoT+FRwJQ0ZKq+v5PrJUzva5o869p/pqNXsHkZsZSGWCQP9CFWAVVtc7tVM= ganesan@BGPF1RZ1HS"
+      
+    - name: user
+      home: /home/user
+      shell: /usr/bin/bash
+      ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCpXyla3EFMA3eBc0vYWlViHoihVXXB8mf1AWskgOTDlQ/MquG8VstpsVVskaL2yFXzfTetaJc/Dpf/yFRdHBKna/o47m/ZYbEl9DeXRfjm6YimgREqhLYrkxbT2J7rs7jNjGEOLmDZh7LE9NxGlgtUrkcOIof6kuMzXDG0nrUCDfV0Mq9yilW8M2sF5YDQobfDhyTxj/7Ji5UFKSnX0+4KZqXVkl69T0pwDoGMIt+d17xSZ3EhJa1fnGaq609kDNbvrwihnNSIq0Jy2/TbD2ZztdPQH+oISH9npQ88hwumXuwHp8pgzKmL6D9a5ci+rKbR1tl9hxUeX2iivuwYt4H3+rW5PyWnDhDrHVqdsOuTdC+HEbc2y76otCGpoC/+t4A9s8t6Ne0VDE8uvSW+eYH0oSmQyA8TPesnMHutm5rTZo85hxep5ZHOSpqGc7huHsTr34oSfoT+FRwJQ0ZKq+v5PrJUzva5o869p/pqNXsHkZsZSGWCQP9CFWAVVtc7tVM= ganesan@BGPF1RZ1HS"
+
+    - name: tester
+      home: /home/tester
+      shell: /usr/bin/bash
+      ssh_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCpXyla3EFMA3eBc0vYWlViHoihVXXB8mf1AWskgOTDlQ/MquG8VstpsVVskaL2yFXzfTetaJc/Dpf/yFRdHBKna/o47m/ZYbEl9DeXRfjm6YimgREqhLYrkxbT2J7rs7jNjGEOLmDZh7LE9NxGlgtUrkcOIof6kuMzXDG0nrUCDfV0Mq9yilW8M2sF5YDQobfDhyTxj/7Ji5UFKSnX0+4KZqXVkl69T0pwDoGMIt+d17xSZ3EhJa1fnGaq609kDNbvrwihnNSIq0Jy2/TbD2ZztdPQH+oISH9npQ88hwumXuwHp8pgzKmL6D9a5ci+rKbR1tl9hxUeX2iivuwYt4H3+rW5PyWnDhDrHVqdsOuTdC+HEbc2y76otCGpoC/+t4A9s8t6Ne0VDE8uvSW+eYH0oSmQyA8TPesnMHutm5rTZo85hxep5ZHOSpqGc7huHsTr34oSfoT+FRwJQ0ZKq+v5PrJUzva5o869p/pqNXsHkZsZSGWCQP9CFWAVVtc7tVM= ganesan@BGPF1RZ1HS"
+    
+  
+  roles:
+    - jump_user
